@@ -23,7 +23,7 @@ const EXTRA_MIN_DISTANCE = DOT_RADIUS + EXTRA_DOT_RADIUS + 0.15;
 const GRID_LINE_CLEARANCE = DOT_RADIUS + 0.9;
 const EXTRA_GRID_LINE_CLEARANCE = EXTRA_DOT_RADIUS + 1.0;
 
-const CONE_WIDTH = Math.PI / 8.2;
+const CONE_WIDTH = Math.PI / 7.7;
 
 const dotPalette = ["#ffec3d", "#e83f3f", "#34d163", "#6ec2ff"];
 
@@ -36,6 +36,7 @@ let solveResult = null;
 
 let coneAngle = Math.PI / 6;
 let rotationSpeed = Number(speedRange.value) * 0.0043;
+let rotationDirection = Math.random() < 0.5 ? -1 : 1;
 let isSolved = false;
 let lastFrame = performance.now();
 
@@ -187,6 +188,7 @@ function buildRound() {
   extraCell = pointToCell(extraDot.x, extraDot.y);
 
   guessedCell = null;
+  rotationDirection = Math.random() < 0.5 ? -1 : 1;
   isSolved = false;
   solveResult = null;
   statusEl.textContent = "Click the exact cell (ring + sector), then press Solve.";
@@ -381,7 +383,7 @@ function animate(ts) {
   const delta = ts - lastFrame;
   lastFrame = ts;
   if (!isSolved) {
-    coneAngle += rotationSpeed * delta;
+    coneAngle += rotationSpeed * rotationDirection * delta;
   }
 
   drawPanel(leftCtx, 0);
