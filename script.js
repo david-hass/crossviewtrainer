@@ -5,23 +5,33 @@ const rightCtx = rightCanvas.getContext("2d");
 
 const newRoundBtn = document.getElementById("newRoundBtn");
 const solveBtn = document.getElementById("solveBtn");
+const settingsBtn = document.getElementById("settingsBtn");
 const speedRange = document.getElementById("speedRange");
+const sizeRange = document.getElementById("sizeRange");
+const dotSizeRange = document.getElementById("dotSizeRange");
+const dotCountRange = document.getElementById("dotCountRange");
+const speedValue = document.getElementById("speedValue");
+const sizeValue = document.getElementById("sizeValue");
+const dotSizeValue = document.getElementById("dotSizeValue");
+const dotCountValue = document.getElementById("dotCountValue");
+const settingsDialog = document.getElementById("settingsDialog");
+const applySettingsBtn = document.getElementById("applySettingsBtn");
 const statusEl = document.getElementById("status");
 
-const SIZE = leftCanvas.width;
-const CENTER = SIZE / 2;
-const RADIUS = SIZE * 0.46;
+let SIZE = leftCanvas.width;
+let CENTER = SIZE / 2;
+let RADIUS = SIZE * 0.46;
 const RINGS = 6;
 const SPOKES = 16;
-const INNER_BLANK_RADIUS = RADIUS / RINGS;
+let INNER_BLANK_RADIUS = RADIUS / RINGS;
 
-const DOT_COUNT = 3400;
-const DOT_RADIUS = 2.2;
-const EXTRA_DOT_RADIUS = 2.9;
-const MIN_DOT_DISTANCE = DOT_RADIUS * 2 + 0.12;
-const EXTRA_MIN_DISTANCE = DOT_RADIUS + EXTRA_DOT_RADIUS + 0.15;
-const GRID_LINE_CLEARANCE = DOT_RADIUS + 0.9;
-const EXTRA_GRID_LINE_CLEARANCE = EXTRA_DOT_RADIUS + 1.0;
+let DOT_COUNT = 3400;
+let DOT_RADIUS = 2.2;
+let EXTRA_DOT_RADIUS = 2.9;
+let MIN_DOT_DISTANCE = DOT_RADIUS * 2 + 0.12;
+let EXTRA_MIN_DISTANCE = DOT_RADIUS + EXTRA_DOT_RADIUS + 0.15;
+let GRID_LINE_CLEARANCE = DOT_RADIUS + 0.9;
+let EXTRA_GRID_LINE_CLEARANCE = EXTRA_DOT_RADIUS + 1.0;
 
 const CONE_WIDTH = Math.PI / 7.7;
 
@@ -39,6 +49,102 @@ let rotationSpeed = Number(speedRange.value) * 0.0043;
 let rotationDirection = Math.random() < 0.5 ? -1 : 1;
 let isSolved = false;
 let lastFrame = performance.now();
+
+const SETTINGS_KEY = "crossviewtrainer.settings.v1";
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function syncGeometry() {
+  CENTER = SIZE / 2;
+  RADIUS = SIZE * 0.46;
+  INNER_BLANK_RADIUS = RADIUS / RINGS;
+}
+
+function syncDotMetrics() {
+  EXTRA_DOT_RADIUS = DOT_RADIUS + 0.7;
+  MIN_DOT_DISTANCE = DOT_RADIUS * 2 + 0.12;
+  EXTRA_MIN_DISTANCE = DOT_RADIUS + EXTRA_DOT_RADIUS + 0.15;
+  GRID_LINE_CLEARANCE = DOT_RADIUS + 0.9;
+  EXTRA_GRID_LINE_CLEARANCE = EXTRA_DOT_RADIUS + 1.0;
+}
+
+function setBoardSize(size) {
+  SIZE = size;
+  leftCanvas.width = size;
+  leftCanvas.height = size;
+  rightCanvas.width = size;
+  rightCanvas.height = size;
+  document.documentElement.style.setProperty("--board-size", `${size}px`);
+  syncGeometry();
+}
+
+function refreshSettingLabels() {
+  speedValue.textContent = speedRange.value;
+  sizeValue.textContent = `${sizeRange.value}px`;
+  dotSizeValue.textContent = dotSizeRange.value;
+  dotCountValue.textContent = dotCountRange.value;
+}
+
+function readSettingsFromInputs() {
+  return {
+    speed: Number(speedRange.value),
+    size: Number(sizeRange.value),
+    dotSize: Number(dotSizeRange.value),
+    dotCount: Number(dotCountRange.value)
+  };
+}
+
+function sanitizeSettings(raw) {
+  return {
+    speed: clamp(Number(raw.speed), 0.05, 0.6),
+    size: clamp(Number(raw.size), 620, 980),
+    dotSize: clamp(Number(raw.dotSize), 1.4, 3.2),
+    dotCount: clamp(Number(raw.dotCount), 2200, 5000)
+  };
+}
+
+function loadSettings() {
+  const defaults = {
+    speed: 0.3,
+    size: 620,
+    dotSize: 2.2,
+    dotCount: 3400
+  };
+
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY);
+    if (!stored) return defaults;
+    const parsed = JSON.parse(stored);
+    return sanitizeSettings({ ...defaults, ...parsed });
+  } catch {
+    return defaults;
+  }
+}
+
+function saveSettings(settings) {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch {
+  }
+}
+
+function applySettings(settings) {
+  const safe = sanitizeSettings(settings);
+
+  speedRange.value = safe.speed.toFixed(2);
+  sizeRange.value = String(Math.round(safe.size / 20) * 20);
+  dotSizeRange.value = safe.dotSize.toFixed(1);
+  dotCountRange.value = String(Math.round(safe.dotCount / 100) * 100);
+
+  DOT_COUNT = Number(dotCountRange.value);
+  DOT_RADIUS = Number(dotSizeRange.value);
+  syncDotMetrics();
+  setBoardSize(Number(sizeRange.value));
+  rotationSpeed = Number(speedRange.value) * 0.0043;
+  refreshSettingLabels();
+}
 
 function rand(min, max) {
   return Math.random() * (max - min) + min;
@@ -414,8 +520,28 @@ function handleCellClick(event, canvas) {
   statusEl.textContent = `Selected ring ${guessedCell.ring}, sector ${guessedCell.sector}. Press Solve.`;
 }
 
-speedRange.addEventListener("input", (event) => {
-  rotationSpeed = Number(event.target.value) * 0.0043;
+speedRange.addEventListener("input", refreshSettingLabels);
+
+sizeRange.addEventListener("input", refreshSettingLabels);
+dotSizeRange.addEventListener("input", refreshSettingLabels);
+dotCountRange.addEventListener("input", refreshSettingLabels);
+
+settingsBtn.addEventListener("click", () => {
+  speedRange.value = (rotationSpeed / 0.0043).toFixed(2);
+  sizeRange.value = String(SIZE);
+  dotSizeRange.value = DOT_RADIUS.toFixed(1);
+  dotCountRange.value = String(DOT_COUNT);
+  refreshSettingLabels();
+  settingsDialog.showModal();
+});
+
+applySettingsBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  const settings = readSettingsFromInputs();
+  applySettings(settings);
+  saveSettings(settings);
+  settingsDialog.close();
+  buildRound();
 });
 
 newRoundBtn.addEventListener("click", () => {
@@ -444,5 +570,6 @@ solveBtn.addEventListener("click", () => {
   }
 });
 
+applySettings(loadSettings());
 buildRound();
 requestAnimationFrame(animate);

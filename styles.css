@@ -7,6 +7,7 @@
   --accent: #e2b714;
   --accent-ink: #16191f;
   --line: #313744;
+  --board-size: 620px;
 }
 
 * {
@@ -94,28 +95,16 @@ body {
   color: #aeb5c2;
 }
 
-canvas {
-  width: min(100%, 760px);
-  height: auto;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-
 .controls {
   margin-top: 1rem;
-  display: grid;
-  grid-template-columns: auto auto auto minmax(140px, 1fr) 1fr;
+  display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.6rem;
   background: rgba(25, 29, 37, 0.86);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 0.7rem 0.8rem;
-}
-
-input[type="range"] {
-  width: 100%;
+  padding: 0.55rem 0.7rem;
+  width: fit-content;
 }
 
 button {
@@ -135,15 +124,77 @@ button {
   color: var(--accent-ink);
 }
 
+#settingsBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
 button:hover {
   filter: brightness(1.08);
 }
 
 #status {
-  justify-self: end;
+  display: block;
+  margin-top: 0.65rem;
   color: #8f96a5;
-  text-align: right;
+  text-align: left;
   font-size: 0.95rem;
+}
+
+canvas {
+  width: min(100%, var(--board-size));
+  height: auto;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+dialog {
+  border: 1px solid #3a404e;
+  border-radius: 12px;
+  background: #1e232d;
+  color: var(--text);
+  padding: 0;
+  width: min(380px, calc(100vw - 2rem));
+}
+
+dialog::backdrop {
+  background: rgba(6, 8, 11, 0.62);
+}
+
+.settings-form {
+  padding: 0.95rem 1rem 0.8rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.settings-form h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  color: #f0f2f5;
+}
+
+.settings-form label {
+  display: flex;
+  justify-content: space-between;
+  color: #b8bfcb;
+  font-size: 0.9rem;
+}
+
+.settings-form input[type="range"] {
+  width: 100%;
+  margin-bottom: 0.1rem;
+}
+
+.settings-form menu {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
 }
 
 @media (max-width: 720px) {
@@ -152,12 +203,7 @@ button:hover {
     gap: 0.6rem;
   }
 
-  .controls {
-    grid-template-columns: 1fr;
-  }
-
   #status {
-    justify-self: start;
     text-align: left;
   }
 }

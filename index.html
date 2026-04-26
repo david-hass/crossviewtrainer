@@ -23,24 +23,45 @@
     <section class="trainer" aria-label="Cross view training panels">
       <article class="panel-wrap">
         <h2>Left View</h2>
-        <canvas id="leftCanvas" width="760" height="760" aria-label="Left dot field"></canvas>
+        <canvas id="leftCanvas" width="620" height="620" aria-label="Left dot field"></canvas>
       </article>
       <article class="panel-wrap">
         <h2>Right View</h2>
-        <canvas id="rightCanvas" width="760" height="760" aria-label="Right dot field"></canvas>
+        <canvas id="rightCanvas" width="620" height="620" aria-label="Right dot field"></canvas>
       </article>
     </section>
 
     <section class="controls" aria-label="Trainer controls">
       <button id="newRoundBtn" type="button">New Round</button>
       <button id="solveBtn" type="button">Solve</button>
+      <button id="settingsBtn" type="button" aria-label="Open settings" title="Settings">⚙</button>
+    </section>
 
-      <label for="speedRange">Rotation Speed</label>
+    <output id="status" role="status" aria-live="polite">Click the exact cell (ring + sector), then press Solve.</output>
+  </main>
+
+  <dialog id="settingsDialog" aria-label="Game settings">
+    <form method="dialog" class="settings-form">
+      <h2>Settings</h2>
+
+      <label for="speedRange">Rotation Speed <span id="speedValue"></span></label>
       <input id="speedRange" type="range" min="0.05" max="0.6" step="0.01" value="0.3">
 
-      <output id="status" role="status" aria-live="polite">Click the exact cell (ring + sector), then press Solve.</output>
-    </section>
-  </main>
+      <label for="sizeRange">Circle Size <span id="sizeValue"></span></label>
+      <input id="sizeRange" type="range" min="620" max="980" step="20" value="620">
+
+      <label for="dotSizeRange">Dot Size <span id="dotSizeValue"></span></label>
+      <input id="dotSizeRange" type="range" min="1.4" max="3.2" step="0.1" value="2.2">
+
+      <label for="dotCountRange">Dot Density <span id="dotCountValue"></span></label>
+      <input id="dotCountRange" type="range" min="2200" max="5000" step="100" value="3400">
+
+      <menu>
+        <button value="cancel">Cancel</button>
+        <button id="applySettingsBtn" value="apply">Apply</button>
+      </menu>
+    </form>
+  </dialog>
 
   <script src="script.js"></script>
 </body>
