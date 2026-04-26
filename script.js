@@ -195,7 +195,7 @@ function buildRound() {
 }
 
 function drawBackground(ctx) {
-  ctx.fillStyle = "#667f98";
+  ctx.fillStyle = "#2e3440";
   ctx.beginPath();
   ctx.arc(CENTER, CENTER, RADIUS, 0, Math.PI * 2);
   ctx.fill();
@@ -205,7 +205,7 @@ function drawGrid(ctx) {
   ctx.save();
   ctx.translate(CENTER, CENTER);
 
-  ctx.strokeStyle = "rgba(228, 241, 255, 0.78)";
+  ctx.strokeStyle = "rgba(236, 241, 248, 0.62)";
   ctx.lineWidth = SIZE * 0.0036;
   ctx.lineCap = "butt";
 
@@ -224,7 +224,7 @@ function drawGrid(ctx) {
     ctx.stroke();
 
     const labelR = RADIUS + SIZE * 0.025;
-    ctx.fillStyle = "rgba(238, 246, 255, 0.93)";
+    ctx.fillStyle = "rgba(214, 220, 230, 0.86)";
     ctx.font = `${Math.round(SIZE * 0.033)}px 'Alegreya Sans', 'Trebuchet MS', sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -247,8 +247,8 @@ function drawCone(ctx) {
   ctx.closePath();
 
   const coneGradient = ctx.createLinearGradient(0, 0, Math.cos(coneAngle) * RADIUS, Math.sin(coneAngle) * RADIUS);
-  coneGradient.addColorStop(0, "rgba(24, 36, 30, 0.48)");
-  coneGradient.addColorStop(1, "rgba(12, 20, 17, 0.86)");
+  coneGradient.addColorStop(0, "rgba(10, 12, 16, 0.38)");
+  coneGradient.addColorStop(1, "rgba(5, 6, 9, 0.86)");
   ctx.fillStyle = coneGradient;
   ctx.fill();
 
@@ -355,13 +355,13 @@ function drawPanel(ctx, side) {
   ctx.clearRect(0, 0, SIZE, SIZE);
   drawBackground(ctx);
   if (guessedCell && !isSolved) {
-    drawCellHighlight(ctx, guessedCell, "rgba(255, 215, 114, 0.22)");
+    drawCellHighlight(ctx, guessedCell, "rgba(226, 183, 20, 0.26)");
   }
   if (isSolved) {
-    drawCellHighlight(ctx, extraCell, "rgba(120, 255, 145, 0.30)");
+    drawCellHighlight(ctx, extraCell, "rgba(91, 217, 138, 0.26)");
     if (solveResult === "wrong") {
-      drawCellHighlight(ctx, guessedCell, "rgba(255, 120, 120, 0.28)");
-      drawCellMarker(ctx, guessedCell, "×", "#ffb2b2");
+      drawCellHighlight(ctx, guessedCell, "rgba(233, 94, 105, 0.31)");
+      drawCellMarker(ctx, guessedCell, "×", "#ffd2d6");
     }
   }
   drawCone(ctx);
@@ -372,7 +372,7 @@ function drawPanel(ctx, side) {
 
   ctx.save();
   ctx.translate(CENTER, CENTER);
-  ctx.fillStyle = "#f3f8ff";
+  ctx.fillStyle = "#e8ecf3";
   ctx.beginPath();
   ctx.arc(0, 0, 2.2, 0, Math.PI * 2);
   ctx.fill();
