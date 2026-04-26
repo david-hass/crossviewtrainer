@@ -1,0 +1,153 @@
+:root {
+  --bg-1: #0d2b66;
+  --bg-2: #214f9d;
+  --panel-bg-1: #3f6ea8;
+  --panel-bg-2: #274f87;
+  --grid: rgba(236, 246, 255, 0.78);
+  --grid-faint: rgba(236, 246, 255, 0.2);
+  --text: #e7f2ff;
+  --muted: #bad0ef;
+  --button: #f4b400;
+  --button-text: #182744;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Alegreya Sans", "Trebuchet MS", sans-serif;
+  background: linear-gradient(180deg, #356cc0 0%, #2f63b3 40%, #28539b 72%, #193c7a 100%);
+  color: var(--text);
+  padding: 0;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  border-radius: 0;
+  background: rgba(20, 43, 84, 0.08);
+  box-shadow: none;
+  padding: 1rem 1.2rem 1.2rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  letter-spacing: 0.05em;
+}
+
+.topbar p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+}
+
+.github-link {
+  color: rgba(236, 246, 255, 0.9);
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.github-link svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.github-link:hover {
+  color: #ffffff;
+}
+
+.trainer {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.panel-wrap {
+  background: transparent;
+  border: 0;
+  border-radius: 14px;
+  padding: 0.35rem;
+  display: grid;
+  place-items: center;
+}
+
+.panel-wrap h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #dcecff;
+}
+
+canvas {
+  width: min(100%, 760px);
+  height: auto;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.controls {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: auto auto auto minmax(140px, 1fr) 1fr;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--button);
+  color: var(--button-text);
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.06);
+}
+
+#status {
+  justify-self: end;
+  color: #d4e9ff;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .trainer {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  #status {
+    justify-self: start;
+    text-align: left;
+  }
+}
